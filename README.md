@@ -1,6 +1,10 @@
 # CompressAndDecompress
 JPEG-ENCODER / LWZ / HUFFMAN / RLE
 
+Install Enviroments: 
+
+    pip install -r requirements.txt
+
 
 Run:
 
