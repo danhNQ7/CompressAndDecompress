@@ -110,14 +110,13 @@ class HuffmanCoding:
 
 
     def compress(self,text,i):
-        
         filename, file_extension = os.path.splitext(self.path)
         output_path =  DIR+"huffman{}.bin".format(i)
 
         # with open(output_path, 'wb') as output:
             # text = file.read()
             # text = text.rstrip()
-        
+    
         frequency = self.make_frequency_dict(text)
         self.make_heap(frequency)
         self.merge_nodes()
@@ -161,28 +160,25 @@ class HuffmanCoding:
 
 
     def decompress(self, i):
-        
         file_extension = os.path.splitext(self.path)
         
         output_path = DIR+"huffman{}.bin".format(i) + "_decompressed" + ".txt"
         result =''
         with open(DIR+"huffman{}.bin".format(i), 'rb') as file, open(output_path, 'w') as output:
             bit_string = ""
-            
+
             byte = file.read(1)
             while(len(byte) > 0):
                 byte = ord(byte)
                 bits = bin(byte)[2:].rjust(8, '0')
                 bit_string += bits
                 byte = file.read(1)
-            print('-----')
+
             encoded_text = self.remove_padding(bit_string)
-            print('-----')
+
             decompressed_text = self.decode_text(encoded_text)
-            print('-----')
             #result=result+(decompressed_text)
             output.write(decompressed_text)
-            
         with open(output_path,'r') as f:
             result = f.read()
         print("Decompressed")

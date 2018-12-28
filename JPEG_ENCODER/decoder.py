@@ -113,13 +113,21 @@ class decoder():
     #     img[i, j, 0] = min(255, max(0, round(1.772 * (cb - 128) + y)))
     return img
   def string_to_tuple(self,string,flag =0):
-    img = list(map(int,string.split(' ')))
+    img = string.strip().split(' ')
+    print(img[:5])
+    tail =''
+    if flag ==1:
+      
+      tail = img[0]
+      img = img[1:]
+      
+    img = list(map(int,img))
     dims =[]
     if flag == 1:
       dims = img[:4]
       img = img[4:]
     tmp = len(img)-1
-    return [tuple([img[i],img[i+1]]) for i in range(0,tmp,2)],dims
+    return [tuple([img[i],img[i+1]]) for i in range(0,tmp,2)],[dims,tail]
   def decode(self, img_y, img_cb, img_cr):
     qy = [16,11,10,16,24,40,51,61,
 12,12,14,19,26,58,60,55,
@@ -165,7 +173,7 @@ class decoder():
     #string to tuple 
     print('[Info] De String to tuple:')
     img_y,dims= self.string_to_tuple(img_y,1)
-    width ,height = dims[:2]
+    width ,height = dims[0][0:2]
     img_cb,_=self.string_to_tuple(img_cb)
     img_cr,_=self.string_to_tuple(img_cr)
     print('Done\n[Info] DeRLE')
@@ -195,7 +203,7 @@ class decoder():
     img = np.zeros([height, width, 3], dtype=np.uint8)
     img = self.rgb_convert(img, origin_cb, origin_cr, img_y)
     print('Done')
-    return img,dims[2:]
+    return img,dims[0][2:],dims[1]
 if __name__=='__main__':
   _decoder = decoder()
   a = _decoder.string_to_tuple('0 1 0 2 0 5 1 2 2 3 4 5')

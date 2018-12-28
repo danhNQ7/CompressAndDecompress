@@ -275,6 +275,8 @@ class Ui_MainWindow(object):
         self.line_train.setText(self.setExistingDirectory())
         self.status_program.setText("Đã chọn File ảnh")
         print(self.line_train.text())
+        self.area_info_img.setText("")
+        self.area_info_img.append(info_img(self.line_train.text(),self.flagalgorithm))
         pixmap = QtGui.QPixmap(self.line_train.text())
         self.img_before.setPixmap(pixmap.scaled(300, 250, QtCore.Qt.KeepAspectRatio))
         
@@ -286,15 +288,15 @@ class Ui_MainWindow(object):
     def doTrain(self):
         print(self.line_train.text())
         print(self.flagalgorithm)
+        self.area_output.setText("")
         if(self.line_train.text()==''):
             self.status_program.setText('Vui lòng chọn file ảnh')
         else:
             # Thực hiện hàm train dữ liệu với biến truyền vào file name là self.dirfile
              #Thay bằng hàm
-            self.area_info_img.setText("")
-            self.area_info_img.append(info_img(self.line_train.text(),self.flagalgorithm))
-            compress(self.line_train.text(),self.flagalgorithm)
+            result = compress(self.line_train.text(),self.flagalgorithm)
             self.status_program.setText('Đã Nén xong')
+            self.area_output.append(result)
             print("Nén")
             return
     def setExistingDirectory(self): 
@@ -305,9 +307,10 @@ class Ui_MainWindow(object):
         return(filename)       
 
     def doTestFile(self):
-        decompress(self.line_test.text(),self.flagalgorithm)
+        path_img =decompress(self.line_test.text(),self.flagalgorithm)
         self.status_program.setText("Đã giải nén xong")
-        pixmap = QtGui.QPixmap(self.line_train.text().replace(".","_restored."))
+        print(self.line_train.text().replace(".","_restored."))
+        pixmap = QtGui.QPixmap(path_img)
         self.img_after.setPixmap(pixmap.scaled(300, 250, QtCore.Qt.KeepAspectRatio))
         return
 

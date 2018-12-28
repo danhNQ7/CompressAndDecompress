@@ -27,6 +27,7 @@ def info_img(path,flag_alg):
         return output_info
 def compress(path,flag_alg):
     dir_folder = path[:path.rfind('.')]
+    
     if flag_alg ==3: 
         lossless_LZW.compress(path,dir_folder)
     else:
@@ -34,8 +35,9 @@ def compress(path,flag_alg):
         begin = time.time()
         _encoder = encoder(path)
         _decoder = decoder()
-        img_y, img_cb, img_cr = _encoder.encode()
+        img_y, img_cb, img_cr,result  = _encoder.encode()
         #Choose Algo
+        result+=_encoder.get_time() + '[INFO]Entropy Coding\n'
         #Huffman
         if flag_alg==0:
             print(len(img_y))
@@ -59,7 +61,8 @@ def compress(path,flag_alg):
             print(len(img_y) +len(img_cb)+len(img_cr))
             with open(dir_folder+".pkl", "wb") as fp:   #Pickling
                 pickle.dump([img_y,img_cb,img_cr], fp)
-
+        result+=_encoder.get_time() + 'DONE\n'
+    return result
 def decompress(path,flag_alg):
     begin = time.time()
     dir_folder = path[:path.rfind('.')]
@@ -101,10 +104,11 @@ def decompress(path,flag_alg):
             img_cb = h2.decompress(1)
             img_cr = h3.decompress(2)
         #decode
-        img,dims = _decoder.decode(img_y, img_cb, img_cr)
+        img,dims,tail_f = _decoder.decode(img_y, img_cb, img_cr)
         sup_width ,sup_height = dims
-        cv2.imwrite(dir_folder+'_restored.ppm', img[0:img.shape[0]-sup_height, 0:img.shape[1]-sup_width])
+        cv2.imwrite(dir_folder+'_restored.{}'.format(tail_f), img[0:img.shape[0]-sup_height, 0:img.shape[1]-sup_width])
         print('Time: {} s'.format(time.time()-begin))
+        return dir_folder+'_restored.{}'.format(tail_f)
 if __name__ =='__main__':
     # compress('assets/flower_foveon.ppm',0)
     decompress('assets/flower_foveon.pkl',0)
