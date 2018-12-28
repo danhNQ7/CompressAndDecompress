@@ -28,8 +28,9 @@ def info_img(path,flag_alg):
 def compress(path,flag_alg):
     dir_folder = path[:path.rfind('.')]
     begin = time.time()
+    result=''
     if flag_alg ==3: 
-        lossless_LZW.compress(path,dir_folder)
+        result += lossless_LZW.compress(path,dir_folder)
     else:
         #JPEG-ENCODING
         _encoder = encoder(path)
@@ -61,15 +62,19 @@ def compress(path,flag_alg):
             with open(dir_folder+".pkl", "wb") as fp:   #Pickling
                 pickle.dump([img_y,img_cb,img_cr], fp)
         result+=_encoder.get_time() + 'Done\n'
-    result = "Compresssion Task\n ==============================\n"+ result
+    result = "Compresssion Task\n==============================\n"+ result
     result += ('Time Total: {} s \n'.format(time.time()-begin))
     return result
 def decompress(path,flag_alg):
     begin = time.time()
     dir_folder = path[:path.rfind('.')]
+    result=''
     if flag_alg ==3:
         #LZW
-        lossless_LZW.decompressImg(path,dir_folder)
+        img_path = lossless_LZW.decompressImg(path,dir_folder)
+        result="\nDecompresssion Task\n==============================\nDone! Decompressed file\n" 
+        result+='Time: {} s'.format(time.time()-begin)
+        return img_path,result
     else:
         #JPEG_DECODER
         #LZW 
