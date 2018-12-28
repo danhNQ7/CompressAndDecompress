@@ -13,7 +13,7 @@ def MSE(img1, img2):
 
 if __name__ == '__main__':
   begin = time.time()
-  _encoder = encoder('./assets/animal-cartoon.jpg')
+  _encoder = encoder('./assets/flower_foveon.ppm')
   _decoder = decoder()
   img_y, img_cb, img_cr = _encoder.encode()
   #huffman coding 
@@ -36,10 +36,11 @@ if __name__ == '__main__':
   img_cr = h3.decompress(3)
 
   # input()
-  img = _decoder.decode(img_y, img_cb, img_cr, _encoder.width, _encoder.height)
+  img,dims = _decoder.decode(img_y, img_cb, img_cr)
+  sup_width ,sup_height = dims
   #cv2.imshow('result', img[0:img.shape[0]-_encoder.sup_height, 0:img.shape[1]-_encoder.sup_width])
   #cv2.waitKey(0)
   #cv2.destroyAllWindows()
   #print(MSE(_encoder.origin_img, img[0:img.shape[0]-_encoder.sup_height, 0:img.shape[1]-_encoder.sup_width]))
-  cv2.imwrite('./result/animal-cartoon-huffman.jpg', img[0:img.shape[0]-_encoder.sup_height, 0:img.shape[1]-_encoder.sup_width])
+  cv2.imwrite('./result/animal-cartoon-huffman.jpg', img[0:img.shape[0]-sup_height, 0:img.shape[1]-sup_width])
   print('Time: {} s'.format(time.time()-begin))

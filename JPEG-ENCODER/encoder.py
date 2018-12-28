@@ -243,7 +243,7 @@ class encoder():
     # print(img_y)
     #tuple to string 
     print('Done\n [INFO] Tuple to string')
-    img_y = self.tuple_to_string(img_y)
+    img_y = '{} {} {} {} '.format(self.width,self.height,self.sup_width,self.sup_height)+self.tuple_to_string(img_y)
     img_cb=self.tuple_to_string(img_cb)
     img_cr=self.tuple_to_string(img_cr)
     # img_y = self.huffman_encode(img_y)

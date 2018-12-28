@@ -16,13 +16,7 @@ if __name__ == '__main__':
   _encoder = encoder('./assets/flower_foveon.ppm')
   _decoder = decoder()
   img_y, img_cb, img_cr = _encoder.encode()
-  # #LZW(Dictionary-BAsed Codeing)
-  # img_y = LZW.compress(img_y)
-  # img_cb = LZW.compress(img_cb)
-  # img_cr = LZW.compress(img_cr)
-  #print(img_y)
   print(len(img_y))
-
   # print(img_y)
   with open("test.txt", "w") as fp:   #Pickling
     fp.write(img_y)

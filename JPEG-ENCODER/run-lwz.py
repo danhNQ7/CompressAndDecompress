@@ -30,10 +30,11 @@ if __name__ == '__main__':
   img_y = LZW.decompress1(img_y)
   img_cb = LZW.decompress1(img_cb)
   img_cr = LZW.decompress1(img_cr)
-  img = _decoder.decode(img_y, img_cb, img_cr, _encoder.width, _encoder.height)
+  img,dims = _decoder.decode(img_y, img_cb, img_cr)
+  sup_width,sup_height = dims
   #cv2.imshow('result', img[0:img.shape[0]-_encoder.sup_height, 0:img.shape[1]-_encoder.sup_width])
   #cv2.waitKey(0)
   #cv2.destroyAllWindows()
   #print(MSE(_encoder.origin_img, img[0:img.shape[0]-_encoder.sup_height, 0:img.shape[1]-_encoder.sup_width]))
-  cv2.imwrite('./result/something-lzw.bmp', img[0:img.shape[0]-_encoder.sup_height, 0:img.shape[1]-_encoder.sup_width])
+  cv2.imwrite('./result/something-lzw.bmp', img[0:img.shape[0]-sup_height, 0:img.shape[1]-sup_width])
   print('Time: {} s'.format(time.time()-begin))
