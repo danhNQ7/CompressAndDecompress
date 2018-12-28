@@ -19,7 +19,7 @@ class Ui_MainWindow(object):
         self.flagalgorithm = 0 # 0 - MultinomialNB, 1 - BernoulliNB ,2 -KNeighborsClassifier, 3 - DecisionTreeClassifier 
         
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1200, 531)
+        MainWindow.resize(1100, 531)
         font = QtGui.QFont()
         font.setPointSize(10)
         MainWindow.setFont(font)
@@ -193,20 +193,20 @@ class Ui_MainWindow(object):
         self.area_info_img.setObjectName("area_info_img")
         
         self.label_img_before = QtWidgets.QLabel(self.centralwidget)
-        self.label_img_before.setGeometry(QtCore.QRect(780, 10, 221, 20))
+        self.label_img_before.setGeometry(QtCore.QRect(750, 10, 221, 20))
         self.label_img_before.setObjectName("label_img_before")
         self.label_img_before.setFont(font)
         self.img_before = QtWidgets.QLabel(self.centralwidget)
-        self.img_before.setGeometry(QtCore.QRect(780, 30, 300, 400))
+        self.img_before.setGeometry(QtCore.QRect(750, 30, 300, 400))
         self.img_before.setAlignment(QtCore.Qt.AlignTop)
 
         
         self.label_img_after = QtWidgets.QLabel(self.centralwidget)
-        self.label_img_after.setGeometry(QtCore.QRect(780, 260, 221, 20))
+        self.label_img_after.setGeometry(QtCore.QRect(750, 260, 221, 20))
         self.label_img_after.setObjectName("label_img_after")
         self.label_img_after.setFont(font)
         self.img_after = QtWidgets.QLabel(self.centralwidget)
-        self.img_after.setGeometry(QtCore.QRect(780, 290, 320, 400))
+        self.img_after.setGeometry(QtCore.QRect(750, 290, 320, 400))
         self.img_after.setAlignment(QtCore.Qt.AlignTop)
 
 
@@ -301,15 +301,12 @@ class Ui_MainWindow(object):
             return
     def setExistingDirectory(self): 
         filename = QtWidgets.QFileDialog.getOpenFileName()[0]
-        return(filename)       
-    def setExistingDirectorys(self): 
-        filename = QtWidgets.QFileDialog.getOpenFileNames()[0]
-        return(filename)       
+        return(filename)          
 
     def doTestFile(self):
-        path_img =decompress(self.line_test.text(),self.flagalgorithm)
+        path_img,result =decompress(self.line_test.text(),self.flagalgorithm)
         self.status_program.setText("Đã giải nén xong")
-        print(self.line_train.text().replace(".","_restored."))
+        self.area_output.append(result)
         pixmap = QtGui.QPixmap(path_img)
         self.img_after.setPixmap(pixmap.scaled(300, 250, QtCore.Qt.KeepAspectRatio))
         return

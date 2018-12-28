@@ -22,22 +22,21 @@ def info_img(path,flag_alg):
         h,w = img.shape[:2]
         size_img= os.path.getsize(path)/1000
         output_info = "Algorithm : {} \n".format(dict_Alg[flag_alg])
-        output_info += "===========================================\n"
-        output_info += "Info Image:\n Path: {} \n Size: {} KB \n WidthxHeight:{}x{}".format(path,size_img,w,h)
+        output_info += "================================\n"
+        output_info += "Info Image:\nPath: {} \nSize: {} KB \nWidthxHeight:{}x{}".format(path,size_img,w,h)
         return output_info
 def compress(path,flag_alg):
     dir_folder = path[:path.rfind('.')]
-    
+    begin = time.time()
     if flag_alg ==3: 
         lossless_LZW.compress(path,dir_folder)
     else:
         #JPEG-ENCODING
-        begin = time.time()
         _encoder = encoder(path)
         _decoder = decoder()
         img_y, img_cb, img_cr,result  = _encoder.encode()
         #Choose Algo
-        result+=_encoder.get_time() + '[INFO]Entropy Coding\n'
+        result+=_encoder.get_time() + '[INFO] Entropy Encoder\n'
         #Huffman
         if flag_alg==0:
             print(len(img_y))
@@ -61,7 +60,9 @@ def compress(path,flag_alg):
             print(len(img_y) +len(img_cb)+len(img_cr))
             with open(dir_folder+".pkl", "wb") as fp:   #Pickling
                 pickle.dump([img_y,img_cb,img_cr], fp)
-        result+=_encoder.get_time() + 'DONE\n'
+        result+=_encoder.get_time() + 'Done\n'
+    result = "Compresssion Task\n ==============================\n"+ result
+    result += ('Time Total: {} s \n'.format(time.time()-begin))
     return result
 def decompress(path,flag_alg):
     begin = time.time()
@@ -73,6 +74,7 @@ def decompress(path,flag_alg):
         #JPEG_DECODER
         #LZW 
         _decoder = decoder()
+        result_tmp=_decoder.get_time() + '[INFO] Entropy Decoder\n'
         if flag_alg ==1:
             with open(path, "rb") as fp:   #Pickling
                 [img_y,img_cb,img_cr]=pickle.load(fp)
@@ -92,23 +94,22 @@ def decompress(path,flag_alg):
             
                 with open(DIR+"huffman{}.bin".format(0), 'wb') as output:
                     output.write(bytes(img_y))
-                print('Done2')
                 with open(DIR+"huffman{}.bin".format(1), 'wb') as output:
                     output.write(bytes(img_cb))
-                print('Done2')
                 with open(DIR+"huffman{}.bin".format(2), 'wb') as output:
                     output.write(bytes(img_cr))
-                print('Done2')
             img_y = h1.decompress(0)
-            print('Done2')
             img_cb = h2.decompress(1)
             img_cr = h3.decompress(2)
+        result_tmp+=_decoder.get_time() + 'Done\n'
         #decode
-        img,dims,tail_f = _decoder.decode(img_y, img_cb, img_cr)
+        img,dims,tail_f,result = _decoder.decode(img_y, img_cb, img_cr)
         sup_width ,sup_height = dims
         cv2.imwrite(dir_folder+'_restored.{}'.format(tail_f), img[0:img.shape[0]-sup_height, 0:img.shape[1]-sup_width])
         print('Time: {} s'.format(time.time()-begin))
-        return dir_folder+'_restored.{}'.format(tail_f)
+        result="\nDecompresssion Task\n ==============================\n"+ result_tmp + result
+        result+='Time: {} s'.format(time.time()-begin)
+        return dir_folder+'_restored.{}'.format(tail_f),result
 if __name__ =='__main__':
     # compress('assets/flower_foveon.ppm',0)
     decompress('assets/flower_foveon.pkl',0)

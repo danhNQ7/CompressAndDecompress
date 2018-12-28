@@ -178,7 +178,7 @@ class encoder():
     return ' '.join([' '.join(map(str, t)) for t in tu])
   def get_time(self):
     now = datetime.datetime.now()
-    return "{}:{}:{}".format(now.hour,now.minute, now.second)
+    return "[{}:{}:{}] - ".format(now.hour,now.minute, now.second)
   def encode(self):
     qy = [16,11,10,16,24,40,51,61,
 12,12,14,19,26,58,60,55,
@@ -217,21 +217,21 @@ class encoder():
     #ycbcr convert
     # self.ycbcr_convert()
     self.img= cv2.cvtColor(self.img,cv2.COLOR_BGR2YUV)
-    result+=self.get_time()+'Done\n[INFO] Subsampling\n'
+    result+=self.get_time()+'Done\n'+self.get_time()+'[INFO] Subsampling\n'
     #subsampling
     img_y, img_cb, img_cr = self.subsampling()
     # dct convert
-    result+=self.get_time()+'Done\n[Info] DCT convert\n'
+    result+=self.get_time()+'Done\n'+self.get_time()+'[Info] DCT convert\n'
     img_y, img_cb, img_cr = self.dct_convert(img_y, img_cb, img_cr)
     # quantization
-    result+=self.get_time()+'Done\n[INFO] Quantization\n'
+    result+=self.get_time()+'Done\n'+self.get_time()+'[INFO] Quantization\n'
     img_y = self.quantization(img_y, qy)
     img_cb = self.quantization(img_cb, qc)
     img_cr = self.quantization(img_cr, qc)
     # print(type(img_y))
     # print(self.width,self.height)
     # z-scan
-    result+=self.get_time()+'Done\n[INFO] z-scan\n'
+    result+=self.get_time()+'Done\n'+self.get_time()+'[INFO] z-scan\n'
     img_y = self.scan(img_y, z)
     img_cb = self.scan(img_cb, z)
     img_cr = self.scan(img_cr, z)
@@ -239,20 +239,20 @@ class encoder():
     # print(img_y)
     # input()
     # encode
-    result+=self.get_time()+'Done\n[INFO] RLE\n'
+    result+=self.get_time()+'Done\n'+self.get_time()+'[INFO] RLE\n'
     img_y = self.RLE(img_y)
     img_cb = self.RLE(img_cb)
     img_cr = self.RLE(img_cr)
     # print(img_y)
     #tuple to string 
-    result+=self.get_time()+'Done\n [INFO] Tuple to string\n'
+    result+=self.get_time()+'Done\n'+self.get_time()+'[INFO] Tuple to string\n'
     img_y = '{} {} {} {} {} '.format(self.path[self.path.rfind('.')+1:],self.width,self.height,self.sup_width,self.sup_height)+self.tuple_to_string(img_y)
     img_cb=self.tuple_to_string(img_cb)
     img_cr=self.tuple_to_string(img_cr)
     # img_y = self.huffman_encode(img_y)
     # img_cb = self.huffman_encode(img_cb)
     # img_cr = self.huffman_encode(img_cr)
-    result+=self.get_time()+'DONE\n'
+    result+=self.get_time()+'Done\n'
     return img_y, img_cb, img_cr,result
 
 

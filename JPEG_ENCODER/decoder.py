@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 # from huffman import huffman, dehuffman, inverse
-
+import datetime
 class decoder():
   def __init__(self):
     pass
@@ -128,6 +128,9 @@ class decoder():
       img = img[4:]
     tmp = len(img)-1
     return [tuple([img[i],img[i+1]]) for i in range(0,tmp,2)],[dims,tail]
+  def get_time(self):
+    now = datetime.datetime.now()
+    return "[{}:{}:{}] - ".format(now.hour,now.minute, now.second)
   def decode(self, img_y, img_cb, img_cr):
     qy = [16,11,10,16,24,40,51,61,
 12,12,14,19,26,58,60,55,
@@ -171,39 +174,40 @@ class decoder():
     # img_cb = self.huffman_decode(img_cb)
     # img_cr = self.huffman_decode(img_cr)
     #string to tuple 
-    print('[Info] De String to tuple:')
+    result=''
+    result+=self.get_time()+'[Info] De String to tuple:\n'
     img_y,dims= self.string_to_tuple(img_y,1)
     width ,height = dims[0][0:2]
     img_cb,_=self.string_to_tuple(img_cb)
     img_cr,_=self.string_to_tuple(img_cr)
-    print('Done\n[Info] DeRLE')
+    result+=self.get_time()+'Done\n'+self.get_time()+'[Info] DeRLE\n'
     #
     img_y = self.deRLE(img_y)
     img_cb = self.deRLE(img_cb)
     img_cr = self.deRLE(img_cr)
-    print('Done\n[Info] Inverse-z-scan')
+    result+=self.get_time()+'Done\n'+self.get_time()+'[Info] Inverse-z-scan\n'
     # inverse-z-scan
     img_y = self.inverse_scan(img_y, z, height, width)
     img_cb = self.inverse_scan(img_cb, z, height // 2, width // 2)
     img_cr = self.inverse_scan(img_cr, z, height // 2, width // 2)
-    print('Done\n[Info] Inverse-quantization')
+    result+=self.get_time()+'Done\n'+self.get_time()+'[Info] Inverse-quantization\n'
     # inverse-quantization
     img_y = self.inverse_quantization(img_y, qy)
     img_cb = self.inverse_quantization(img_cb, qc)
     img_cr = self.inverse_quantization(img_cr, qc)
-    print('Done\n[Info] IDCT')
+    result+=self.get_time()+'Done\n'+self.get_time()+'[Info] IDCT\n'
     # idct
     img_y = self.idct(img_y, dct_kernel)
     img_cb = self.idct(img_cb, dct_kernel)
     img_cr = self.idct(img_cr, dct_kernel)
     # inverse subsampling
-    print('Done\n[INFO] Inverse_subsampling')
+    result+=self.get_time()+'Done\n'+self.get_time()+'[INFO] Inverse_subsampling\n'
     origin_cb, origin_cr = self.inverse_subsampling(img_cb, img_cr, height, width)
-    print('Done\n[INFO] rgb convert')
+    result+=self.get_time()+'Done\n'+self.get_time()+'[INFO] rgb convert\n'
     img = np.zeros([height, width, 3], dtype=np.uint8)
     img = self.rgb_convert(img, origin_cb, origin_cr, img_y)
-    print('Done')
-    return img,dims[0][2:],dims[1]
+    result+=self.get_time()+'Done\n'
+    return img,dims[0][2:],dims[1],result
 if __name__=='__main__':
   _decoder = decoder()
   a = _decoder.string_to_tuple('0 1 0 2 0 5 1 2 2 3 4 5')
