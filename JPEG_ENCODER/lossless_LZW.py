@@ -29,7 +29,8 @@ def convertImg2Str(img):
     for s in convertedString:
         realString +=str(s)
     return realString
-def compressImg(img,filename):
+def compress(path_img,filename):
+    img = cv2.imread(path_img)
     st = time.time()
     myshape = img.shape
     print('Img shape:', myshape)
@@ -37,19 +38,19 @@ def compressImg(img,filename):
     realString = convertImg2Str(img)
 
     print('lenght string',len(realString))
-
+    ext = path_img.split('.')[-1]
     a = LZW.compress1(realString)
     # print(len(a))
-    pickle.dump((a, myshape), open("{}.pkl".format(filename),"wb"))
+    pickle.dump((a, myshape,ext), open("{}.pkl".format(filename),"wb"))
     print("Done! the compressed file is {}.pkl".format(filename))
     print('Time compressed: ', time.time() - st)
 
 def decompressImg(com_path,dir_path):
     st = time.time()
-    com, myshape = pickle.load(open(com_path,'rb'))
+    com, myshape ,ext= pickle.load(open(com_path,'rb'))
     b = LZW.decompress1(com)
     img = regenerate_the_image(b,myshape)
-    cv2.imwrite(dir_path+'_restored.ppm',img)
+    cv2.imwrite(dir_path+'_restored.{}'.format(ext),img)
     #print("Done! the decompressed image file is {}".format(new_file))
     #print('Time decompress: ', time.time() - st)
 
@@ -61,12 +62,12 @@ def score(org_path,com_path):
     print(new)
     print('Compression Ratio: ',org/new)
 
-def compress(path_img,dir_path):
-    img = cv2.imread(path_img)
-    print(img.shape)
+# def compress(path_img,dir_path):
+#     img = cv2.imread(path_img)
+#     print(img.shape)
 
 
-    compressImg(img, dir_path)
+#     compressImg(img, dir_path)
     # decompressImg('somethingHieu.pkl', path_img)
     # score(path_img, 'somethingHieu.pkl')
 
