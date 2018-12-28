@@ -6,7 +6,7 @@ from functools import total_ordering
 Code for Huffman Coding, compression and decompression. 
 Explanation at http://bhrigu.me/blog/2017/01/17/huffman-coding-python-implementation/
 """
-DIR = 'Huffman/'
+DIR = 'TMP/'
 @total_ordering
 class HeapNode:
     def __init__(self, char, freq):
@@ -113,23 +113,24 @@ class HuffmanCoding:
         filename, file_extension = os.path.splitext(self.path)
         output_path =  DIR+"huffman{}.bin".format(i)
 
-        with open(output_path, 'wb') as output:
+        # with open(output_path, 'wb') as output:
             # text = file.read()
             # text = text.rstrip()
 
-            frequency = self.make_frequency_dict(text)
-            self.make_heap(frequency)
-            self.merge_nodes()
-            self.make_codes()
+        frequency = self.make_frequency_dict(text)
+        self.make_heap(frequency)
+        self.merge_nodes()
+        self.make_codes()
 
-            encoded_text = self.get_encoded_text(text)
-            padded_encoded_text = self.pad_encoded_text(encoded_text)
+        encoded_text = self.get_encoded_text(text)
+        padded_encoded_text = self.pad_encoded_text(encoded_text)
 
-            b = self.get_byte_array(padded_encoded_text)
-            output.write(bytes(b))
+        b = self.get_byte_array(padded_encoded_text)
+            # output.write(bytes(b))
 
         print("Compressed")
-        return output_path
+        
+        return b
 
 
     """ functions for decompression: """
