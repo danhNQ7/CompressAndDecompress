@@ -2,8 +2,8 @@
 JPEG-ENCODER / LWZ / HUFFMAN / RLE
 
 # Compression Algorithms:
-- In this project, we provide JPEG-ENCODER (Lossy Compression Algorithms) combine with Lossless Compression Algorithms (Huffman,LZW,ARTHIMATIC).
-- This is Base Line of ENCODER (DECODER similier): 
+- In this project, we provide JPEG-ENCODER (Lossy Compression Algorithms) combine with Lossless Compression Algorithms (Huffman, LZW, ARITHMETIC).
+- This is Base Line of ENCODER (DECODER similar): 
 
 
 ![Screenshot](assets/diagram.jpg)
