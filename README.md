@@ -40,5 +40,5 @@ $ python run.py [-h] -i INPUT [-f FLAG] [-m METHOD]
 
 Run:
 ```sh
-python GUI.py
+$ python GUI.py
 ```
