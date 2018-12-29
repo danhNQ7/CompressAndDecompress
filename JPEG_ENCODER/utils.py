@@ -11,21 +11,6 @@ import arithmetic_compress
 import arithmetic_decompress
 dict_Alg={0:"JPEG encoder with Huffman Coding",1:"JPEG encoder LZW Coding",
             2: "JPEG encoder Arithmetic Coding",3:"LZW Lossless Coding"}
-def info_img(path,flag_alg):
-    img = cv2.imread(path)
-
-    try: 
-        if img == None:
-            output_info = "Please choose file image"
-            return output_info
-    except:
-       
-        h,w = img.shape[:2]
-        size_img= os.path.getsize(path)/1000
-        output_info = "Algorithm : {} \n".format(dict_Alg[flag_alg])
-        output_info += "================================\n"
-        output_info += "Info Image:\nPath: {} \nSize: {} KB \nWidthxHeight:{}x{}".format(path,size_img,w,h)
-        return output_info
 def compress(path,flag_alg):
     dir_folder = path[:path.rfind('.')]
     begin = time.time()

@@ -10,7 +10,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 sys.path.insert(0, 'JPEG_ENCODER')
 from utils import *
-
+dict_Alg={0:"JPEG encoder with Huffman Coding",1:"JPEG encoder LZW Coding",
+                2: "JPEG encoder Arithmetic Coding",3:"LZW Lossless Coding"}
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         # Bien khoi tao rieng
@@ -167,7 +168,7 @@ class Ui_MainWindow(object):
         self.status_program.setObjectName("status_program")
 
         self.groupBox_output = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_output.setGeometry(QtCore.QRect(310, 250, 371, 261))
+        self.groupBox_output.setGeometry(QtCore.QRect(310, 280, 371, 245))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(True)
@@ -175,12 +176,12 @@ class Ui_MainWindow(object):
         self.groupBox_output.setFont(font)
         self.groupBox_output.setObjectName("groupBox_output")
         self.area_output = QtWidgets.QTextBrowser(self.groupBox_output)
-        self.area_output.setGeometry(QtCore.QRect(10, 30, 350, 221))
+        self.area_output.setGeometry(QtCore.QRect(10, 30, 350, 205))
         self.area_output.setStyleSheet("background:rgb(255, 255, 255)")
         self.area_output.setObjectName("area_output")
         
         self.groupBox_info_img = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_info_img.setGeometry(QtCore.QRect(310, 10, 371, 211))
+        self.groupBox_info_img.setGeometry(QtCore.QRect(310, 10, 371, 130))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(True)
@@ -188,10 +189,23 @@ class Ui_MainWindow(object):
         self.groupBox_info_img.setFont(font)
         self.groupBox_info_img.setObjectName("groupBox_info_img")
         self.area_info_img = QtWidgets.QTextBrowser(self.groupBox_info_img)
-        self.area_info_img.setGeometry(QtCore.QRect(10, 30, 350, 171))
+        self.area_info_img.setGeometry(QtCore.QRect(8, 28, 355, 95))
         self.area_info_img.setStyleSheet("background:rgb(255, 255, 255)")
         self.area_info_img.setObjectName("area_info_img")
-        
+        ##
+        self.groupBox_info_decode = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox_info_decode.setGeometry(QtCore.QRect(310, 145, 371, 130))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.groupBox_info_decode.setFont(font)
+        self.groupBox_info_decode.setObjectName("groupBox_info_decode")
+        self.area_info_decode = QtWidgets.QTextBrowser(self.groupBox_info_decode)
+        self.area_info_decode.setGeometry(QtCore.QRect(8, 28, 355, 95))
+        self.area_info_decode.setStyleSheet("background:rgb(255, 255, 255)")
+        self.area_info_decode.setObjectName("area_info_decode")
+
         self.label_img_before = QtWidgets.QLabel(self.centralwidget)
         self.label_img_before.setGeometry(QtCore.QRect(750, 10, 221, 20))
         self.label_img_before.setObjectName("label_img_before")
@@ -202,7 +216,7 @@ class Ui_MainWindow(object):
 
         
         self.label_img_after = QtWidgets.QLabel(self.centralwidget)
-        self.label_img_after.setGeometry(QtCore.QRect(750, 260, 221, 20))
+        self.label_img_after.setGeometry(QtCore.QRect(750, 265, 221, 20))
         self.label_img_after.setObjectName("label_img_after")
         self.label_img_after.setFont(font)
         self.img_after = QtWidgets.QLabel(self.centralwidget)
@@ -256,7 +270,8 @@ class Ui_MainWindow(object):
         self.label_trangthai.setText(_translate("MainWindow", "TRẠNG THÁI:"))
         self.status_program.setText(_translate("MainWindow", "Bắt Đầu"))
         self.groupBox_output.setTitle(_translate("MainWindow", "Log"))
-        self.groupBox_info_img.setTitle(_translate("MainWindow", "Info"))
+        self.groupBox_info_img.setTitle(_translate("MainWindow", "Info Original Image"))
+        self.groupBox_info_decode.setTitle(_translate("MainWindow", "Info Compressed Image"))
         self.label_img_before.setText(_translate("MainWindow", "Ảnh ban đầu "))
         self.label_img_after.setText(_translate("MainWindow", "Ảnh sau khi nén "))
 
@@ -271,20 +286,41 @@ class Ui_MainWindow(object):
         self._flagLZW_ll.toggled.connect(lambda:self.setalgorithm(3))
     def setalgorithm(self,flagalg):
         self.flagalgorithm=flagalg
+
+    def printInfoFile(self,filepath):
+        size_file= os.path.getsize(filepath)/1000
+        output_info = "Info Fileload:\nPath: {} \nSize: {} KB\n===============================".format(filepath[filepath.rfind('/')+1:],size_file)
+        return output_info
+    def printAlg(self,flag_alg):
+        return "Algorithm : {} \n===============================".format(dict_Alg[flag_alg])
+    def info_img(self,path,flag_alg):
+        img = cv2.imread(path)
+        try: 
+            if img == None:
+                output_info = "Please choose file image"
+                return output_info
+        except:
+            h,w = img.shape[:2]
+            size_img= os.path.getsize(path)/1000
+            output_info = "Info Image:\nPath: {} \nSize: {} KB \nWidthxHeight:{}x{}".format(path[path.rfind('/')+1:],size_img,w,h)
+            return output_info
+
     def openfiletrain(self):
         self.line_train.setText(self.setExistingDirectory())
         self.status_program.setText("Đã chọn File ảnh")
         print(self.line_train.text())
         self.area_info_img.setText("")
-        self.area_info_img.append(info_img(self.line_train.text(),self.flagalgorithm))
+        self.area_info_img.append(self.printAlg(self.flagalgorithm))
+        self.area_info_img.append(self.info_img(self.line_train.text(),self.flagalgorithm))
         pixmap = QtGui.QPixmap(self.line_train.text())
         self.img_before.setPixmap(pixmap.scaled(300, 250, QtCore.Qt.KeepAspectRatio))
         
     def openfiletest(self):
         self.line_test.setText(self.setExistingDirectory())
+        self.area_info_decode.setText("")
+        self.area_info_decode.append(self.printInfoFile(self.line_test.text()))
         self.status_program.setText("Đã chọn File Nén")
         print(self.line_train.text())
-
     def doTrain(self):
         print(self.line_train.text())
         print(self.flagalgorithm)
@@ -304,18 +340,15 @@ class Ui_MainWindow(object):
         return(filename)          
 
     def doTestFile(self):
+        self.area_info_decode.append(self.printAlg(self.flagalgorithm))
         path_img,result =decompress(self.line_test.text(),self.flagalgorithm)
+        self.area_info_decode.append(self.info_img(path_img,self.flagalgorithm))
         self.status_program.setText("Đã giải nén xong")
         self.area_output.append(result)
         pixmap = QtGui.QPixmap(path_img)
         self.img_after.setPixmap(pixmap.scaled(300, 250, QtCore.Qt.KeepAspectRatio))
         return
 
-
-    def printResult(self,result):
-        self.area_output.setText(result)
-    def getInfoImage(self,imgFile):
-        return     
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
