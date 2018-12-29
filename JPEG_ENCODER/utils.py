@@ -7,7 +7,8 @@ import pickle
 import time
 import cv2
 import os
-
+import arithmetic_compress
+import arithmetic_decompress
 dict_Alg={0:"JPEG encoder with Huffman Coding",1:"JPEG encoder LZW Coding",
             2: "JPEG encoder Arithmetic Coding",3:"LZW Lossless Coding"}
 def info_img(path,flag_alg):
@@ -61,7 +62,15 @@ def compress(path,flag_alg):
             print(len(img_y) +len(img_cb)+len(img_cr))
             with open(dir_folder+".pkl", "wb") as fp:   #Pickling
                 pickle.dump([img_y,img_cb,img_cr], fp)
+        #Arithmetic 
+        elif flag_alg == 2:
+            img_y = arithmetic_compress.arith_compress(img_y)
+            img_cb = arithmetic_compress.arith_compress(img_cb)
+            img_cr = arithmetic_compress.arith_compress(img_cr)
+            with open(dir_folder+".pkl", "wb") as fp:   #Pickling
+                pickle.dump([img_y,img_cb,img_cr], fp)
         result+=_encoder.get_time() + 'Done\n'
+        
     result = "Compresssion Task\n==============================\n"+ result
     result += ('Time Total: {} s \n'.format(time.time()-begin))
     return result
@@ -106,6 +115,15 @@ def decompress(path,flag_alg):
             img_y = h1.decompress(0)
             img_cb = h2.decompress(1)
             img_cr = h3.decompress(2)
+        # Arithmetic
+        elif flag_alg ==2:
+            print("Arithmetic Decode")
+            with open(path, "rb") as fp:   #Pickling
+                [img_y,img_cb,img_cr]=pickle.load(fp)
+            #decode
+            img_y = arithmetic_decompress.arith_decompress(img_y)
+            img_cb = arithmetic_decompress.arith_decompress(img_cb)
+            img_cr = arithmetic_decompress.arith_decompress(img_cr)
         result_tmp+=_decoder.get_time() + 'Done\n'
         #decode
         img,dims,tail_f,result = _decoder.decode(img_y, img_cb, img_cr)
@@ -113,7 +131,7 @@ def decompress(path,flag_alg):
         cv2.imwrite(dir_folder+'_restored.{}'.format(tail_f), img[0:img.shape[0]-sup_height, 0:img.shape[1]-sup_width])
         print('Time: {} s'.format(time.time()-begin))
         result="\nDecompresssion Task\n ==============================\n"+ result_tmp + result
-        result+='Time: {} s'.format(time.time()-begin)
+        result+='Time Total: {} s'.format(time.time()-begin)
         return dir_folder+'_restored.{}'.format(tail_f),result
 if __name__ =='__main__':
     # compress('assets/flower_foveon.ppm',0)
