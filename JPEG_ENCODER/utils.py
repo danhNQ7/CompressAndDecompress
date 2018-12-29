@@ -16,6 +16,7 @@ def compress(path,flag_alg):
     begin = time.time()
     result=''
     if flag_alg ==3: 
+        dir_folder+='_LWZLossless'
         result += lossless_LZW.compress(path,dir_folder)
     else:
         #JPEG-ENCODING
@@ -35,7 +36,7 @@ def compress(path,flag_alg):
             img_cb = h2.compress(img_cb,1)
             img_cr = h3.compress(img_cr,2)
             print(type(img_y))
-            
+            dir_folder+='_huffman'
             with open(dir_folder+".pkl", "wb") as fp:   #Pickling
                 pickle.dump([h1,h2,h3,img_y,img_cb,img_cr], fp)
         #LZW
@@ -43,7 +44,7 @@ def compress(path,flag_alg):
             img_y = LZW.compress1(img_y)
             img_cb = LZW.compress1(img_cb)
             img_cr = LZW.compress1(img_cr)
-
+            dir_folder+='_lzw'
             print(len(img_y) +len(img_cb)+len(img_cr))
             with open(dir_folder+".pkl", "wb") as fp:   #Pickling
                 pickle.dump([img_y,img_cb,img_cr], fp)
@@ -52,12 +53,14 @@ def compress(path,flag_alg):
             img_y = arithmetic_compress.arith_compress(img_y)
             img_cb = arithmetic_compress.arith_compress(img_cb)
             img_cr = arithmetic_compress.arith_compress(img_cr)
+            dir_folder+='_arithmetic'
             with open(dir_folder+".pkl", "wb") as fp:   #Pickling
                 pickle.dump([img_y,img_cb,img_cr], fp)
         result+=_encoder.get_time() + 'Done\n'
-        
+    
     result = "Compresssion Task\n==============================\n"+ result
     result += ('Time Total: {} s \n'.format(time.time()-begin))
+    result+='PATH RESULT: {}'.format(dir_folder+'.pkl\n')
     return result
 def decompress(path,flag_alg):
     begin = time.time()
