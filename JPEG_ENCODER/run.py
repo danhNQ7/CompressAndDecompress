@@ -142,7 +142,7 @@ def decompress(path,flag_alg):
         return dir_folder+'_restored.{}'.format(tail_f),result
 if __name__ =='__main__':
     parser =argparse.ArgumentParser()
-    parser.add_argument('-i','--input',help='Path image')
+    parser.add_argument('-i','--input',help='Path image',required=True)
     parser.add_argument('-f','--flag',type = int,help = 'Choose: 0 :Compress | 1 :Decompress',default =0)
     parser.add_argument('-m','--method',type = int,help ='Choose method: 0 :JPEG encoder with Huffman Coding | 1 :JPEG encoder LZW Coding | 2 :JPEG encoder Arithmetic Coding | 3 :LZW Lossless Coding\n',default =0)
     args = parser.parse_args()
