@@ -36,7 +36,7 @@ $ python run.py [-h] -i INPUT [-f FLAG] [-m METHOD]
 
 # DEMO:
 
-![Screenshot](assets/demo.jpg)
+![Screenshot](assets/demo.png)
 
 Run:
 ```sh
